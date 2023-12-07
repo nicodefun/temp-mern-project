@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import styles from "./css/Dashboard.module.css";
 import SmallSidebar from "../components/SmallSidebar";
-import BigSideBar from "../components/BigSideBar";
+import BigSideBar from "../components/BigSidebar";
 import NavBar from "../components/NavBar";
 import { useState, createContext, useContext } from "react";
 import { checkDefaultTheme } from "../utils/checkDefaultTheme";

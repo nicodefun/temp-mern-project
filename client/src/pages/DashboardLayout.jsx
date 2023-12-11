@@ -9,7 +9,7 @@ import styles from "./css/Dashboard.module.css";
 import SmallSidebar from "../components/SmallSidebar";
 import BigSideBar from "../components/BigSidebar";
 import NavBar from "../components/NavBar";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import { checkDefaultTheme } from "../utils/checkDefaultTheme";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";

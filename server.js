@@ -48,7 +48,15 @@ import { authenticateUser } from "./middleware/authMiddleware.js";
 //   res.send("hello word");
 // });
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'img-src': ["'self'", 'https://res.cloudinary.com'],
+    },
+  },
+}));
+
 app.use(mongoSanitize());
 app.get("/api/v1/test", (req, res) => {
   res.json({ msg: "test route" });

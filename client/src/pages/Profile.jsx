@@ -5,7 +5,7 @@ import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import styles from "./css/AddJob.module.css";
 
-export const action = async ({request})=>{
+export const action = (queryClient)=>async ({request})=>{
 const formData = await request.formData();
 const file  = formData.get('avatar');
 if(file && file.size > 500000){
@@ -15,11 +15,12 @@ if(file && file.size > 500000){
 try {
   await customFetch.patch('/users/update-user', formData);
   toast.success('Profile updated successfully');
+  queryClient.invalidateQueries(['user']);
+  return redirect('/dashboard')
 } catch (error) {
   toast.error(error?.response?.data?.msg);
-  console.log(error?.response?.data?.msg)
+  return null;
 }
-return null;
 }
 
 

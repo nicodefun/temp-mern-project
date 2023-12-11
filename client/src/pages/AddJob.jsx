@@ -11,12 +11,13 @@ import styles from "./css/AddJob.module.css";
 import { JOB_STATUS, JOB_TYPE } from "../../../util/constants";
 import FormRowSelect from "../components/FormRowSelect";
 
-export const action = async ({request})=>{
+export const action = (queryClient)=>async ({request})=>{
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   // console.log(typeof(data));
   try {
     await customFetch.post('/jobs', data);
+    queryClient.invalidateQueries(['jobs'])
     toast.success('Job added successfully');
     return redirect('allJobs')
   } catch (error) {

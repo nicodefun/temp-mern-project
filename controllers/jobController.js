@@ -74,7 +74,7 @@ export const editJob = async (req, res) => {
   //     return res.status(400).json({ msg: "please provide company and position" });
   //   }
   const { id } = req.params;
-  const updatedJob = await Job.findOneAndUpdate(id, req.body, { new: true });
+  const updatedJob = await Job.findOneAndUpdate({ _id: id }, req.body, { new: true });
   // if (!updatedJob) throw new NotFoundError(`no job with id ${id}`);
   //   theJob.company = company;
   //   theJob.position = position;

@@ -7,6 +7,8 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 // import { body, validationResult } from "express-validator";
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
 
 //public
 import { dirname } from "path";
@@ -42,10 +44,12 @@ import userRouter from "./routers/userRouter.js";
 import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 import { authenticateUser } from "./middleware/authMiddleware.js";
 
-app.get("/", (req, res) => {
-  res.send("hello word");
-});
+// app.get("/", (req, res) => {
+//   res.send("hello word");
+// });
 
+app.use(helmet());
+app.use(mongoSanitize());
 app.get("/api/v1/test", (req, res) => {
   res.json({ msg: "test route" });
 });

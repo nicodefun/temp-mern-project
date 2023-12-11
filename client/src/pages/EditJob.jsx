@@ -6,15 +6,28 @@ import { JOB_STATUS, JOB_TYPE } from "../../../util/constants";
 import { Form, useNavigation, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import customFetch from "../utils/customFetch";
+import { useQuery } from "@tanstack/react-query";
 // import { useParams } from "react-router-dom";
 
-export const loader = async (loaderData) => {
+const singleJobQuery = (id) => {
+  return {
+    queryKey: ["jobs", id],
+    queryFn: async () => {
+      const { data } = await customFetch.get(`/jobs/${id}`);
+      return data;
+    },
+  };
+};
+
+export const loader = (queryClient) => async (loaderData) => {
   const { params } = loaderData;
   // console.log(params);
   try {
-    const { data } = await customFetch.get(`/jobs/${params.id}`);
+    await queryClient.ensureQueryData(singleJobQuery(params.id));
+    return params.id;
+    // const { data } = await customFetch.get(`/jobs/${params.id}`);
     // console.log(data);
-    return data;
+    // return data;
   } catch (err) {
     // console.log(err)
     toast.error(err?.response?.data?.msg);
@@ -22,32 +35,40 @@ export const loader = async (loaderData) => {
   }
 };
 
-export const action = async (data) => {
-  const {request, params} = data;
+export const action = (queryClient) => async (data) => {
+  const { request, params } = data;
   const formData = await request.formData();
   const inputData = Object.fromEntries(formData);
   try {
-    await customFetch.patch(`/jobs/${params.id}`, inputData)
-    toast.success('Job edited successfully.')
-    return redirect('/dashboard/allJobs');
+    await customFetch.patch(`/jobs/${params.id}`, inputData);
+    queryClient.invalidateQueries(["jobs"]);
+    queryClient.invalidateQueries(["job"]);
+    toast.success("Job edited successfully.");
+    return redirect("/dashboard/allJobs");
     // console.log(inputData);
-    return null;
+    // return null;
   } catch (err) {
     toast.error(err?.response?.data?.msg);
+    console.log(err);
     return err;
   }
 };
 
 const EditJob = () => {
   // const params = useParams();
-  const { theJob: job } = useLoaderData();
+  // const { theJob: job } = useLoaderData();
+  const id= useLoaderData();
+  const { data } = useQuery(singleJobQuery(id));
+  // console.log(data);
+  const { theJob: job } = data;
+
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   // console.log(job);
   return (
     <section className={styles["edit-section"]}>
       <Form method="post" className={` ${styles["edit-form"]}}`}>
-        <h4 className={`form-title ${styles["edit-title"]}`}>add job</h4>
+        <h4 className={`form-title ${styles["edit-title"]}`}>Edit job</h4>
         <div className={styles["form-center"]}>
           <FormRow
             type="text"
